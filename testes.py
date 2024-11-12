@@ -5,6 +5,9 @@ import datetime as dt
 import sqlite3
 from tkcalendar import DateEntry
 import smtplib
+import openpyxl
+from openpyxl import Workbook
+from tkinter import messagebox
 
 banco_de_dados_existe = os.path.exists("cadastro-materiais.db")
 
@@ -261,6 +264,33 @@ def pesquisar_produto():
         tree.insert("", "end", values=resultado)
 
     conexao.close()
+    
+def exportar_para_excel():
+    try:
+        # Cria um novo workbook e seleciona a planilha ativa
+        workbook = Workbook()
+        planilha = workbook.active
+        planilha.title = "Produtos Cadastrados"
+
+        # Define os nomes das colunas
+        colunas = ["ID", "Descrição", "Tipo de Unidade", "Quantidade", "Data de Compra", "Data de Validade", "Preço do Lote"]
+
+        # Adiciona os nomes das colunas na primeira linha do Excel
+        for col_num, coluna_nome in enumerate(colunas, start=1):
+            planilha.cell(row=1, column=col_num, value=coluna_nome)
+
+        # Adiciona os dados da TreeView no arquivo Excel
+        for row_num, item in enumerate(tree.get_children(), start=2):
+            valores = tree.item(item)["values"]
+            for col_num, valor in enumerate(valores, start=1):
+                planilha.cell(row=row_num, column=col_num, value=valor)
+
+        # Salva o arquivo Excel
+        workbook.save("produtos_cadastrados.xlsx")
+        messagebox.showinfo("Exportação", "Dados exportados com sucesso para 'produtos_cadastrados.xlsx'.")
+
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro ao exportar: {e}")
 
 
 janela = tk.Tk()
@@ -355,8 +385,10 @@ botao_cadastrar_produtos = tk.Button(text='Cadastrar Produtos', command= cadastr
 botao_cadastrar_produtos.grid(column=0, row=10, padx=20, pady=20, sticky="nswe", columnspan=10)
 botao_atualizar = ttk.Button(text="Atualizar Item", command= atualizar_item)
 botao_atualizar.grid(column=0, row=12, padx=20, pady=20,  columnspan=7)
+botao_exportar = ttk.Button(janela, text="Exportar para Excel", command=exportar_para_excel)
+botao_exportar.grid(column=1, row=12, padx=20, pady=10, columnspan=8)
 botao_excluir = ttk.Button(text="Excluir Item", command= excluir_item)
-botao_excluir.grid(column=1, row=12, padx=20, pady=20,  columnspan=8)
+botao_excluir.grid(column=3, row=12, padx=20, pady=20,  columnspan=9)
 botao_pesquisar = tk.Button(text='Pesquisar', command=pesquisar_produto)
 botao_pesquisar.grid(column=2, row=0, padx=10, pady=20, sticky="nswe", columnspan=1)
 

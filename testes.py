@@ -360,7 +360,7 @@ botao_excluir.grid(column=1, row=12, padx=20, pady=20,  columnspan=8)
 botao_pesquisar = tk.Button(text='Pesquisar', command=pesquisar_produto)
 botao_pesquisar.grid(column=2, row=0, padx=10, pady=20, sticky="nswe", columnspan=1)
 
-# da linha 323 ate a linha 361 é toda a parte grafica e visual do nosso cadastro
+# da linha 44 ate a linha 65 é toda a parte grafica e visual do nosso cadastro
 
 carregar_itens_cadastrados()
 
